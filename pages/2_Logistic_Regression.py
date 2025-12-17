@@ -3,10 +3,11 @@ import numpy as np
 import plotly.graph_objects as go
 import time
 from models.logistic_regression import LogisticRegression
-from utils import accuracy_score
+import utils
 
 st.set_page_config(page_title="Logistic Regression", layout="wide")
-st.title("🧬 Logistic Regression: Cancer Detection")
+utils.navbar()
+st.title("🧬 Logistic Regression: The Classifier")
 
 # --- TABS ---
 tab1, tab2 = st.tabs(["🎮 Playground", "📖 Theory & Math"])
@@ -111,7 +112,7 @@ with tab1:
                 
             progress_bar.empty()
             y_pred = model.predict(X)
-            acc = accuracy_score(y, y_pred)
+            acc = utils.accuracy_score(y, y_pred)
             st.success(f"Training Complete! Final Accuracy: {acc*100:.2f}%")
             
         except Exception as e:

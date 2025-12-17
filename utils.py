@@ -1,4 +1,33 @@
+import streamlit as st
 import numpy as np
+
+def navbar():
+    """
+    Creates a navigation bar at the top of the page.
+    """
+    with st.container():
+        col1, col2, col3, col4, col5 = st.columns(5)
+        
+        with col1:
+            st.page_link("Home.py", label="Home", icon="🏠")
+        with col2:
+            st.page_link("pages/1_Linear_Regression.py", label="Linear Regression", icon="📏")
+        with col3:
+            st.page_link("pages/2_Logistic_Regression.py", label="Logistic Regression", icon="🧬")
+        with col4:
+            st.page_link("pages/3_KNN.py", label="KNN", icon="📍")
+        with col5:
+            st.page_link("pages/4_KMeans.py", label="K-Means", icon="✨")
+    
+    st.divider()
+
+    # CSS to hide the default sidebar navigation
+    st.markdown("""
+        <style>
+            [data-testid="stSidebarNav"] {display: none;}
+        </style>
+    """, unsafe_allow_html=True)
+
 
 def mean_squared_error(y_true, y_pred):
     """Calculates the average squared difference between actual and predicted values."""

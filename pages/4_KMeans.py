@@ -3,8 +3,10 @@ import numpy as np
 import plotly.graph_objects as go
 import time
 from models.kmeans import KMeans
+import utils
 
 st.set_page_config(page_title="K-Means Clustering", layout="wide")
+utils.navbar()
 st.title("✨ K-Means: Finding Patterns in Chaos")
 
 # --- TABS ---

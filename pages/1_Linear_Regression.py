@@ -3,10 +3,11 @@ import numpy as np
 import plotly.graph_objects as go
 import time
 from models.linear_regression import LinearRegression
-from utils import r2_score, mean_squared_error
+import utils
 
 st.set_page_config(page_title="Linear Regression", layout="wide")
-st.title("🏡 Linear Regression: House Price Predictor")
+utils.navbar()
+st.title("📏 Linear Regression: The Hello World of ML")
 
 # --- TABS FOR NAVIGATION ---
 tab1, tab2 = st.tabs(["🎮 Playground", "📖 Theory & Math"])
@@ -126,12 +127,12 @@ with tab1:
     if st.session_state.get('trained'):
         model = st.session_state['model']
         y_pred_norm = model.predict(X_norm)
-        final_r2 = r2_score(y_norm, y_pred_norm)
+        final_r2 = utils.r2_score(y_norm, y_pred_norm)
         
         st.divider()
         m1, m2 = st.columns(2)
         m1.metric("Final Accuracy (R²)", f"{final_r2:.4f}")
-        m2.metric("Final Loss (MSE)", f"{mean_squared_error(y_norm, y_pred_norm):.5f}")
+        m2.metric("Final Loss (MSE)", f"{utils.mean_squared_error(y_norm, y_pred_norm):.5f}")
         
         st.subheader("💰 Estimate House Price")
         col_in, col_out = st.columns(2)

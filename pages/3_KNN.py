@@ -3,9 +3,11 @@ import numpy as np
 import plotly.graph_objects as go
 import time
 from models.knn import KNN
+import utils
 from utils import accuracy_score
 
 st.set_page_config(page_title="K-Nearest Neighbors", layout="wide")
+utils.navbar()
 st.title("📍 K-Nearest Neighbors (KNN)")
 
 # --- TABS ---

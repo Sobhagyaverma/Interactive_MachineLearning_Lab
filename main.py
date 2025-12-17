@@ -9,7 +9,6 @@ st.set_page_config(
 # --- HEADER ---
 st.title("🧪 Interactive Machine Learning Lab")
 st.markdown("""
-### Welcome to the "Glass Box" AI.
 Most people use Machine Learning libraries like a **Black Box**: input goes in, magic comes out.
 **Here, we build the engine ourselves.**
 """)

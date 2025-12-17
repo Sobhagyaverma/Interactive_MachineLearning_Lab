@@ -109,12 +109,29 @@ Contributions are welcome! If you'd like to add new algorithms or improve existi
 
 ## 📝 To-Do
 
-- [ ] Neural Networks (Multi-Layer Perceptron)
-- [ ] Decision Trees
-- [ ] Support Vector Machines
-- [ ] Principal Component Analysis (PCA)
+### Supervised Learning
+- [ ] Polynomial Regression: Non-linear regression using polynomial features
+- [ ] Support Vector Machines (SVM): Maximum margin classifiers
+- [ ] Naive Bayes: Probabilistic classification based on Bayes' theorem
+- [ ] Decision Trees: Flowchart-like structure of "if-then" rules
+- [ ] Random Forest: Ensemble of decision trees for improved accuracy
+- [ ] XGBoost / LightGBM: High-performance gradient boosting algorithms
+
+### Deep Learning
+- [ ] Neural Networks (Multi-Layer Perceptron): Fully connected neural networks
+- [ ] Convolutional Neural Networks (CNN): For image recognition and computer vision
+- [ ] Recurrent Neural Networks (RNN): For sequential data and time series
+
+### Reinforcement Learning
+- [ ] Q-Learning: Basic value-based reinforcement learning
+
+### Unsupervised Learning
+- [ ] Principal Component Analysis (PCA): Dimensionality reduction technique
+
+### Features
 - [ ] Add more visualizations
 - [ ] Export trained models
+- [ ] Model comparison tool
 
 ## 📄 License
 

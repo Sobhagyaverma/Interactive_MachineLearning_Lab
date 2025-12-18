@@ -160,7 +160,34 @@ with col1:
         st.markdown("Find the optimal hyperplane. Maximize the margin between classes.")
         st.write("###")
         st.page_link("pages/7_SVM.py", label="Start Experiment", icon="🚀", use_container_width=True)
+    with col2:
+        with st.container(border=True):
+            st.markdown("### 🎲 Naive Bayes")
+            st.markdown("Probabilistic classification using Bayes' Theorem. Visualize the Bell Curves.")
+            st.write("###")
+            st.page_link("pages/8_Naive_Bayes.py", label="Start Experiment", icon="🚀", use_container_width=True)
+    
+    with col3: 
+        with st.container(border=True):
+            st.markdown("### 🌳 Decision Trees")
+            st.markdown("Play 20 Questions with your data. See how the tree splits space into boxes.")
+            st.write("###")
+            st.page_link("pages/9_Decision_Tree.py", label="Start Experiment", icon="🚀", use_container_width=True)
 
+col4, col5, col6 = st.columns(3)
+
+with col4: 
+    with st.container(border=True):
+        st.markdown("### 🌲🌲 Random Forest")
+        st.markdown("The 'Wisdom of the Crowd'. Combine many trees to create a robust model.")
+        st.write("###")
+        st.page_link("pages/10_Random_Forest.py", label="Start Experiment", icon="🚀", use_container_width=True)
+with col5:
+    with st.container(border=True):
+        st.markdown("### 👁️ CNN (Convolution)")
+        st.markdown("Computer Vision from scratch. See how filters 'scan' an image.")
+        st.write("###")
+        st.page_link("pages/11_CNN.py", label="Start Experiment", icon="🚀", use_container_width=True)
 
 
 st.divider()

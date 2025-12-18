@@ -27,7 +27,7 @@ def navbar():
     """, unsafe_allow_html=True)
     
     with st.container():
-        # Row 1: Main algorithms
+        # Row 1: Core algorithms
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             st.page_link("Home.py", label="🏠 Home", use_container_width=True)
@@ -48,6 +48,17 @@ def navbar():
             st.page_link("pages/6_Polynomial_Regression.py", label="📈 Polynomial", use_container_width=True)
         with col4:
             st.page_link("pages/7_SVM.py", label="⚔️ SVM", use_container_width=True)
+        
+        # Row 3: New algorithms
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.page_link("pages/8_Naive_Bayes.py", label="🎲 Naive Bayes", use_container_width=True)
+        with col2:
+            st.page_link("pages/9_Decision_Tree.py", label="🌳 Decision Tree", use_container_width=True)
+        with col3:
+            st.page_link("pages/10_Random_Forest.py", label="🌲 Random Forest", use_container_width=True)
+        with col4:
+            st.page_link("pages/11_CNN.py", label="👁️ CNN", use_container_width=True)
     
     st.divider()
 

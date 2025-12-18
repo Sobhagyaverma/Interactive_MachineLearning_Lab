@@ -5,28 +5,52 @@ def navbar():
     """
     Creates a navigation bar at the top of the page.
     """
-    with st.container():
-        col1, col2, col3, col4, col5 = st.columns(5)
-        
-        with col1:
-            st.page_link("Home.py", label="Home", icon="🏠")
-        with col2:
-            st.page_link("pages/1_Linear_Regression.py", label="Linear Regression", icon="📏")
-        with col3:
-            st.page_link("pages/2_Logistic_Regression.py", label="Logistic Regression", icon="🧬")
-        with col4:
-            st.page_link("pages/3_KNN.py", label="KNN", icon="📍")
-        with col5:
-            st.page_link("pages/4_KMeans.py", label="K-Means", icon="✨")
-    
-    st.divider()
-
-    # CSS to hide the default sidebar navigation
+    # CSS for better navbar styling
     st.markdown("""
         <style>
             [data-testid="stSidebarNav"] {display: none;}
+            .nav-container {
+                background: linear-gradient(to right, #f8f9fa, #e9ecef);
+                padding: 0.75rem 1rem;
+                border-radius: 10px;
+                margin-bottom: 1.5rem;
+            }
+            .stButton button {
+                border-radius: 5px;
+                transition: all 0.3s ease;
+            }
+            .stButton button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
         </style>
     """, unsafe_allow_html=True)
+    
+    with st.container():
+        # Row 1: Main algorithms
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.page_link("Home.py", label="🏠 Home", use_container_width=True)
+        with col2:
+            st.page_link("pages/1_Linear_Regression.py", label="📏 Linear Reg", use_container_width=True)
+        with col3:
+            st.page_link("pages/2_Logistic_Regression.py", label="🧬 Logistic Reg", use_container_width=True)
+        with col4:
+            st.page_link("pages/3_KNN.py", label="📍 KNN", use_container_width=True)
+        
+        # Row 2: More algorithms
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.page_link("pages/4_KMeans.py", label="✨ K-Means", use_container_width=True)
+        with col2:
+            st.page_link("pages/5_Neural_Networks.py", label="🧠 Neural Net", use_container_width=True)
+        with col3:
+            st.page_link("pages/6_Polynomial_Regression.py", label="📈 Polynomial", use_container_width=True)
+        with col4:
+            st.page_link("pages/7_SVM.py", label="⚔️ SVM", use_container_width=True)
+    
+    st.divider()
+
 
 
 def mean_squared_error(y_true, y_pred):

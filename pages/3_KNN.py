@@ -8,7 +8,54 @@ from utils import accuracy_score
 
 st.set_page_config(page_title="K-Nearest Neighbors", layout="wide")
 utils.navbar()
-st.title("📍 K-Nearest Neighbors (KNN)")
+
+# --- CUSTOM CSS ---
+st.markdown("""
+<style>
+    .hero-container {
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+    }
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1f2937;
+    }
+    .hero-subtitle {
+        font-size: 1.1rem;
+        color: #6c757d;
+        font-style: italic;
+    }
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 10px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        background-color: #f0f2f6;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #ff4b4b;
+        color: white;
+    }
+    .theory-box {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 5px solid #ff4b4b;
+        margin-bottom: 1rem;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# --- HERO SECTION ---
+st.markdown("""
+<div class="hero-container">
+    <div class="hero-title">📍 K-Nearest Neighbors</div>
+    <div class="hero-subtitle">"You are the average of your K closest friends."</div>
+</div>
+""", unsafe_allow_html=True)
 
 # --- TABS ---
 tab1, tab2 = st.tabs(["🎮 Playground", "📖 Theory & Math"])

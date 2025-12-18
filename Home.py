@@ -142,10 +142,26 @@ with col2:
         st.markdown("Build a multi-layer perceptron from scratch.")
         st.write("###")
         st.page_link("pages/5_Neural_Networks.py", label="Start Experiment", icon="🚀", use_container_width=True)
+    
 
 with col3:
-    # Placeholder for future
-    st.empty()
+    with st.container(border=True):
+        st.markdown("### 📈 Polynomial Regression")
+        st.markdown("Fit curved lines to complex data. See how 'Degrees' affect overfitting.")
+        st.write("###")
+        st.page_link("pages/6_Polynomial_Regression.py", label="Start Experiment", icon="🚀", use_container_width=True)
+
+# Row 3
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    with st.container(border=True):
+        st.markdown("### ⚔️ Support Vector Machine")
+        st.markdown("Find the optimal hyperplane. Maximize the margin between classes.")
+        st.write("###")
+        st.page_link("pages/7_SVM.py", label="Start Experiment", icon="🚀", use_container_width=True)
+
+
 
 st.divider()
 

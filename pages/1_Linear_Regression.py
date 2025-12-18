@@ -7,7 +7,47 @@ import utils
 
 st.set_page_config(page_title="Linear Regression", layout="wide")
 utils.navbar()
-st.title("📏 Linear Regression: The Hello World of ML")
+
+# --- CUSTOM CSS ---
+st.markdown("""
+<style>
+    .hero-container {
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+    }
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1f2937;
+    }
+    .hero-subtitle {
+        font-size: 1.1rem;
+        color: #6c757d;
+        font-style: italic;
+    }
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 10px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        background-color: #f0f2f6;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #ff4b4b;
+        color: white;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# --- HERO SECTION ---
+st.markdown("""
+<div class="hero-container">
+    <div class="hero-title">📏 Linear Regression</div>
+    <div class="hero-subtitle">"The foundation: fitting a line through the noise."</div>
+</div>
+""", unsafe_allow_html=True)
 
 # --- TABS FOR NAVIGATION ---
 tab1, tab2 = st.tabs(["🎮 Playground", "📖 Theory & Math"])

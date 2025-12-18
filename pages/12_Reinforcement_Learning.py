@@ -130,10 +130,10 @@ class QLearningAgent:
 # --- VISUALIZATION HELPER ---
 def render_grid(env, show_path=None):
     """Render the grid with emojis"""
-    grid_html = '<div style="display: inline-block;">'
+    grid_html = '<div style="display: inline-block; font-family: sans-serif;">'
     
     for i in range(env.size):
-        grid_html += '<div style="display: flex;">'
+        grid_html += '<div style="display: flex; margin: 0;">'
         for j in range(env.size):
             # Determine cell content and color
             if [i, j] == env.agent_pos:
@@ -169,10 +169,10 @@ def render_q_table(agent, env):
     """Render Q-table as a grid showing best actions"""
     actions_emoji = ["⬆️", "⬇️", "⬅️", "➡️"]
     
-    q_grid_html = '<div style="display: inline-block; margin-top: 1rem;">'
+    q_grid_html = '<div style="display: inline-block; margin-top: 1rem; font-family: sans-serif;">'
     
     for i in range(agent.grid_size):
-        q_grid_html += '<div style="display: flex;">'
+        q_grid_html += '<div style="display: flex; margin: 0;">'
         for j in range(agent.grid_size):
             q_values = agent.q_table[i, j]
             best_action = np.argmax(q_values)
@@ -234,9 +234,10 @@ with tab1:
     with col_left:
         st.subheader("1. The Environment")
         
-        # Grid visualization
-        grid_placeholder = st.empty()
-        grid_placeholder.markdown(render_grid(env), unsafe_allow_html=True)
+        # Grid visualization - FIXED: properly use unsafe_allow_html
+        grid_container = st.container()
+        with grid_container:
+            st.markdown(render_grid(env), unsafe_allow_html=True)
         
         st.write("---")
         
@@ -270,6 +271,7 @@ with tab1:
                 episode_reward = 0
                 
                 status_placeholder = st.empty()
+                grid_container = st.container()
                 
                 while step_count < max_steps:
                     action = agent.get_action(state)
@@ -279,8 +281,9 @@ with tab1:
                     episode_reward += reward
                     path.append(list(env.agent_pos))
                     
-                    # Show animation
-                    grid_placeholder.markdown(render_grid(env, path), unsafe_allow_html=True)
+                    # Show animation - properly render HTML
+                    with grid_container:
+                        st.markdown(render_grid(env, path), unsafe_allow_html=True)
                     status_placeholder.write(f"Step {step_count + 1} | Reward: {reward:+.0f} | Total: {episode_reward:+.0f}")
                     time.sleep(0.3)
                     

@@ -72,7 +72,7 @@ def train_model():
     X_train, _, y_train, _ = train_test_split(X, y, train_size=10000, random_state=42, stratify=y)
     
     # Logistic Regression (One-vs-Rest)
-    clf = LogisticRegression(solver='lbfgs', max_iter=100, multi_class='multinomial', tol=0.01)
+    clf = LogisticRegression(solver='lbfgs', max_iter=100, tol=0.01)
     clf.fit(X_train, y_train)
     
     return clf

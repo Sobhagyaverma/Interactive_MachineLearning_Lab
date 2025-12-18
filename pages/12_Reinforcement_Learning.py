@@ -234,10 +234,40 @@ with tab1:
     with col_left:
         st.subheader("1. The Environment")
         
-        # Grid visualization - FIXED: properly use unsafe_allow_html
-        grid_container = st.container()
-        with grid_container:
-            st.markdown(render_grid(env), unsafe_allow_html=True)
+        # Grid visualization - Use columns layout instead of HTML
+        st.write("")  # spacing
+        
+        # Create visual grid using Streamlit columns
+        for i in range(env.size):
+            cols = st.columns(env.size)
+            for j, col in enumerate(cols):
+                with col:
+                    # Determine cell content
+                    if [i, j] == env.agent_pos:
+                        emoji = "🤖"
+                        color = "#60a5fa"
+                    elif [i, j] == env.goal_pos:
+                        emoji = "💎"
+                        color = "#34d399"
+                    elif [i, j] == env.trap_pos:
+                        emoji = "💣"
+                        color = "#f87171"
+                    else:
+                        emoji = "⬜"
+                        color = "#f3f4f6"
+                    
+                    st.markdown(f"""
+                        <div style="background-color: {color}; 
+                                    border: 2px solid #e5e7eb; 
+                                    border-radius: 8px; 
+                                    height: 60px;
+                                    display: flex; 
+                                    align-items: center; 
+                                    justify-content: center;
+                                    font-size: 2rem;">
+                            {emoji}
+                        </div>
+                    """, unsafe_allow_html=True)
         
         st.write("---")
         
@@ -345,9 +375,39 @@ with tab1:
         st.write("- **Arrow**: Best action to take from that position")
         st.write("- **Q-value**: How good that position is")
         
-        # Q-table visualization
-        qtable_placeholder = st.empty()
-        qtable_placeholder.markdown(render_q_table(agent, env), unsafe_allow_html=True)
+        # Q-table visualization using columns
+        actions_emoji = ["⬆️", "⬇️", "⬅️", "➡️"]
+        
+        for i in range(agent.grid_size):
+            cols = st.columns(agent.grid_size)
+            for j, col in enumerate(cols):
+                with col:
+                    q_values = agent.q_table[i, j]
+                    best_action = np.argmax(q_values)
+                    max_q = q_values[best_action]
+                    
+                    # Color based on Q-value
+                    if max_q > 50:
+                        bg_color = "#d1fae5"
+                    elif max_q < -50:
+                        bg_color = "#fee2e2"
+                    else:
+                        bg_color = "#f9fafb"
+                    
+                    st.markdown(f"""
+                        <div style="background-color: {bg_color}; 
+                                    border: 2px solid #ddd; 
+                                    border-radius: 8px;
+                                    height: 70px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    justify-content: center;
+                                    padding: 5px;">
+                            <div style="font-size: 1.5rem;">{actions_emoji[best_action]}</div>
+                            <div style="font-size: 0.6rem; color: #666;">Q:{max_q:.1f}</div>
+                        </div>
+                    """, unsafe_allow_html=True)
         
         st.write("---")
         

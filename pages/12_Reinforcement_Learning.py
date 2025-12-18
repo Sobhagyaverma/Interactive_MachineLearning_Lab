@@ -15,20 +15,9 @@ utils.navbar()
 # --- CUSTOM CSS ---
 st.markdown("""
 <style>
-    .hero-container {
-        padding: 1rem 0;
-        margin-bottom: 2rem;
-    }
-    .hero-title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: #1f2937;
-    }
-    .hero-subtitle {
-        font-size: 1.1rem;
-        color: #6c757d;
-        font-style: italic;
-    }
+    .hero-container { padding: 1rem 0; margin-bottom: 2rem; }
+    .hero-title { font-size: 2.5rem; font-weight: 800; color: #1f2937; }
+    .hero-subtitle { font-size: 1.1rem; color: #6c757d; font-style: italic; }
     /* Enhanced Tab Styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
@@ -59,22 +48,6 @@ st.markdown("""
         border-color: #ff4b4b;
         box-shadow: 0 4px 12px rgba(255, 75, 75, 0.3);
     }
-    .grid-cell {
-        width: 60px;
-        height: 60px;
-        font-size: 2rem;
-        text-align: center;
-        line-height: 60px;
-        border: 2px solid #ddd;
-        display: inline-block;
-        margin: 2px;
-        border-radius: 8px;
-    }
-    .cell-empty { background-color: #f9fafb; }
-    .cell-agent { background-color: #dbeafe; }
-    .cell-treasure { background-color: #d1fae5; }
-    .cell-bomb { background-color: #fee2e2; }
-    .cell-wall { background-color: #374151; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -82,36 +55,38 @@ st.markdown("""
 class GridWorld:
     def __init__(self, size=5):
         self.size = size
-        self.agent_pos = [0, 0]
-        self.treasure_pos = [size-1, size-1]
-        self.bomb_pos = [size-1, 0]
+        self.reset()
         
     def reset(self):
         self.agent_pos = [0, 0]
+        self.goal_pos = [self.size-1, self.size-1]
+        self.trap_pos = [self.size-1, 0]
         return tuple(self.agent_pos)
     
     def step(self, action):
         # Actions: 0=Up, 1=Down, 2=Left, 3=Right
-        old_pos = self.agent_pos.copy()
+        row, col = self.agent_pos
         
-        if action == 0 and self.agent_pos[0] > 0:  # Up
-            self.agent_pos[0] -= 1
-        elif action == 1 and self.agent_pos[0] < self.size - 1:  # Down
-            self.agent_pos[0] += 1
-        elif action == 2 and self.agent_pos[1] > 0:  # Left
-            self.agent_pos[1] -= 1
-        elif action == 3 and self.agent_pos[1] < self.size - 1:  # Right
-            self.agent_pos[1] += 1
+        if action == 0 and row > 0:  # Up
+            row -= 1
+        elif action == 1 and row < self.size - 1:  # Down
+            row += 1
+        elif action == 2 and col > 0:  # Left
+            col -= 1
+        elif action == 3 and col < self.size - 1:  # Right
+            col += 1
+        
+        self.agent_pos = [row, col]
         
         # Calculate reward
-        if self.agent_pos == self.treasure_pos:
-            reward = 100  # Cookie! 🍪
+        if self.agent_pos == self.goal_pos:
+            reward = 100  # Big reward for goal!
             done = True
-        elif self.agent_pos == self.bomb_pos:
-            reward = -100  # Slap! 👋
+        elif self.agent_pos == self.trap_pos:
+            reward = -100  # Big penalty for trap!
             done = True
         else:
-            reward = -1  # Small penalty for each step
+            reward = -1  # Small penalty for each step (encourages efficiency)
             done = False
         
         return tuple(self.agent_pos), reward, done
@@ -132,12 +107,12 @@ class QLearningAgent:
     def get_action(self, state):
         # Epsilon-greedy policy
         if np.random.random() < self.epsilon:
-            return np.random.randint(0, 4)  # Explore
+            return np.random.randint(0, 4)  # Explore (random)
         else:
-            return np.argmax(self.q_table[state[0], state[1]])  # Exploit
+            return np.argmax(self.q_table[state[0], state[1]])  # Exploit (best known)
     
     def update(self, state, action, reward, next_state, done):
-        # Q-Learning Formula
+        # Q-Learning Formula: Q(s,a) = Q(s,a) + α[r + γ max Q(s',a') - Q(s,a)]
         current_q = self.q_table[state[0], state[1], action]
         
         if done:
@@ -152,301 +127,415 @@ class QLearningAgent:
     def decay_epsilon(self):
         self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
 
-# --- HELPER: VISUALIZE GRID ---
-def render_grid(env, agent_pos):
-    grid_html = "<div style='font-family: monospace;'>"
+# --- VISUALIZATION HELPER ---
+def render_grid(env, show_path=None):
+    """Render the grid with emojis"""
+    grid_html = '<div style="display: inline-block;">'
     
     for i in range(env.size):
-        grid_html += "<div>"
+        grid_html += '<div style="display: flex;">'
         for j in range(env.size):
-            if [i, j] == agent_pos:
-                cell_class = "cell-agent"
+            # Determine cell content and color
+            if [i, j] == env.agent_pos:
                 emoji = "🤖"
-            elif [i, j] == env.treasure_pos:
-                cell_class = "cell-treasure"
+                bg_color = "#60a5fa"  # Blue
+            elif [i, j] == env.goal_pos:
                 emoji = "💎"
-            elif [i, j] == env.bomb_pos:
-                cell_class = "cell-bomb"
+                bg_color = "#34d399"  # Green
+            elif [i, j] == env.trap_pos:
                 emoji = "💣"
+                bg_color = "#f87171"  # Red
+            elif show_path and (i, j) in show_path:
+                emoji = "👣"
+                bg_color = "#fcd34d"  # Yellow
             else:
-                cell_class = "cell-empty"
                 emoji = "⬜"
+                bg_color = "#f3f4f6"  # Gray
             
-            grid_html += f"<div class='grid-cell {cell_class}'>{emoji}</div>"
-        grid_html += "</div>"
+            grid_html += f'''
+                <div style="width: 60px; height: 60px; background-color: {bg_color}; 
+                            border: 2px solid #e5e7eb; border-radius: 8px; 
+                            display: flex; align-items: center; justify-content: center;
+                            font-size: 2rem; margin: 2px;">
+                    {emoji}
+                </div>
+            '''
+        grid_html += '</div>'
     
-    grid_html += "</div>"
+    grid_html += '</div>'
     return grid_html
+
+def render_q_table(agent, env):
+    """Render Q-table as a grid showing best actions"""
+    actions_emoji = ["⬆️", "⬇️", "⬅️", "➡️"]
+    
+    q_grid_html = '<div style="display: inline-block; margin-top: 1rem;">'
+    
+    for i in range(agent.grid_size):
+        q_grid_html += '<div style="display: flex;">'
+        for j in range(agent.grid_size):
+            q_values = agent.q_table[i, j]
+            best_action = np.argmax(q_values)
+            max_q = q_values[best_action]
+            
+            # Color based on Q-value
+            if max_q > 50:
+                bg_color = "#d1fae5"  # Green
+            elif max_q < -50:
+                bg_color = "#fee2e2"  # Red
+            else:
+                bg_color = "#f9fafb"  # Gray
+            
+            q_grid_html += f'''
+                <div style="width: 70px; height: 70px; background-color: {bg_color}; 
+                            border: 2px solid #ddd; border-radius: 8px; 
+                            display: flex; flex-direction: column; align-items: center; 
+                            justify-content: center; margin: 2px; padding: 5px;">
+                    <div style="font-size: 1.8rem;">{actions_emoji[best_action]}</div>
+                    <div style="font-size: 0.7rem; color: #666;">Q:{max_q:.1f}</div>
+                </div>
+            '''
+        q_grid_html += '</div>'
+    
+    q_grid_html += '</div>'
+    return q_grid_html
+
+# --- INITIALIZE SESSION STATE ---
+if 'env' not in st.session_state:
+    st.session_state['env'] = GridWorld(size=5)
+    st.session_state['agent'] = QLearningAgent(grid_size=5)
+    st.session_state['episode_count'] = 0
+    st.session_state['training_rewards'] = []
+
+env = st.session_state['env']
+agent = st.session_state['agent']
 
 # --- HERO ---
 st.markdown("""
 <div class="hero-container">
     <div class="hero-title">🎮 Reinforcement Learning (Q-Learning)</div>
-    <div class="hero-subtitle">"Figure it out yourself. Cookie for wins 🍪, slaps for losses 👋."</div>
+    <div class="hero-subtitle">"The robot learns to navigate by trial and error: 🍪 for wins, 👋 for losses."</div>
 </div>
 """, unsafe_allow_html=True)
 
-# --- INITIALIZE ---
-if 'env' not in st.session_state:
-    st.session_state['env'] = GridWorld(size=5)
-    st.session_state['agent'] = QLearningAgent(grid_size=5)
-    st.session_state['episode'] = 0
-    st.session_state['total_reward'] = 0
-
-env = st.session_state['env']
-agent = st.session_state['agent']
-
 # --- TABS ---
-tab1, tab2 = st.tabs(["🎮 GridWorld Playground", "📚 Theory & Math"])
+tab1, tab2 = st.tabs(["🎮 Interactive Playground", "📚 Theory & Math"])
 
 with tab1:
     st.info("""
-    **🎯 The Mission:** Help the robot 🤖 learn to reach the treasure 💎 while avoiding the bomb 💣.
-    - **Treasure (💎)**: +100 reward (Cookie! 🍪)
-    - **Bomb (💣)**: -100 reward (Slap! 👋)
-    - **Each step**: -1 reward (encourages speed)
+    **🎯 Mission:** Watch the robot 🤖 learn to find the treasure 💎 while avoiding the trap 💣!
+    - **💎 Treasure (Goal)**: +100 reward - The robot wins!
+    - **💣 Trap**: -100 reward - The robot loses!
+    - **Each step**: -1 reward (teaches the robot to be efficient)
     """)
     
-    col_controls, col_viz = st.columns([1, 2])
+    col_left, col_right = st.columns([1.2, 1])
     
-    with col_controls:
-        st.subheader("⚙️ Hyperparameters")
+    with col_left:
+        st.subheader("1. The Environment")
         
-        learning_rate = st.slider("Learning Rate (α)", 0.01, 1.0, 0.1, help="How much to update Q-values")
-        discount_factor = st.slider("Discount Factor (γ)", 0.0, 1.0, 0.9, help="How much to value future rewards")
-        epsilon = st.slider("Exploration Rate (ε)", 0.0, 1.0, float(agent.epsilon), help="Probability of random action")
-        
-        agent.lr = learning_rate
-        agent.gamma = discount_factor
-        agent.epsilon = epsilon
+        # Grid visualization
+        grid_placeholder = st.empty()
+        grid_placeholder.markdown(render_grid(env), unsafe_allow_html=True)
         
         st.write("---")
         
-        episodes = st.slider("Training Episodes", 10, 500, 100)
+        # Controls
+        col_btn1, col_btn2, col_btn3 = st.columns(3)
         
-        if st.button("🚀 Start Training", type="primary", use_container_width=True):
-            progress_bar = st.progress(0)
-            status_text = st.empty()
-            
-            rewards_history = []
-            
-            for ep in range(episodes):
-                state = env.reset()
-                episode_reward = 0
-                done = False
-                steps = 0
-                max_steps = 50
+        with col_btn1:
+            if st.button("👟 Single Step", use_container_width=True):
+                state = tuple(env.agent_pos)
+                action = agent.get_action(state)
+                next_state, reward, done = env.step(action)
+                agent.update(state, action, reward, next_state, done)
                 
-                while not done and steps < max_steps:
+                if done:
+                    if reward > 0:
+                        st.toast("🎉 Found Treasure! +100", icon="💎")
+                    else:
+                        st.toast("💥 Hit Trap! -100", icon="💣")
+                    time.sleep(1)
+                    env.reset()
+                    st.session_state['episode_count'] += 1
+                
+                st.rerun()
+        
+        with col_btn2:
+            if st.button("🎬 Watch Episode", use_container_width=True):
+                state = env.reset()
+                path = [list(state)]
+                step_count = 0
+                max_steps = 50
+                episode_reward = 0
+                
+                status_placeholder = st.empty()
+                
+                while step_count < max_steps:
                     action = agent.get_action(state)
                     next_state, reward, done = env.step(action)
                     agent.update(state, action, reward, next_state, done)
                     
                     episode_reward += reward
+                    path.append(list(env.agent_pos))
+                    
+                    # Show animation
+                    grid_placeholder.markdown(render_grid(env, path), unsafe_allow_html=True)
+                    status_placeholder.write(f"Step {step_count + 1} | Reward: {reward:+.0f} | Total: {episode_reward:+.0f}")
+                    time.sleep(0.3)
+                    
+                    if done:
+                        if reward > 0:
+                            st.success(f"✅ Episode Complete! Total Reward: {episode_reward:+.0f} | Steps: {step_count + 1}")
+                        else:
+                            st.error(f"❌ Hit Trap! Total Reward: {episode_reward:+.0f} | Steps: {step_count + 1}")
+                        break
+                    
                     state = next_state
-                    steps += 1
+                    step_count += 1
                 
                 agent.decay_epsilon()
-                rewards_history.append(episode_reward)
+                st.session_state['episode_count'] += 1
+                st.session_state['training_rewards'].append(episode_reward)
+                time.sleep(1)
+                env.reset()
+                st.rerun()
+        
+        with col_btn3:
+            if st.button("⚡ Train 50x", use_container_width=True):
+                progress_bar = st.progress(0)
+                status_text = st.empty()
                 
-                if ep % (episodes // 10) == 0:
-                    progress_bar.progress((ep + 1) / episodes)
-                    avg_reward = np.mean(rewards_history[-10:]) if len(rewards_history) >= 10 else np.mean(rewards_history)
-                    status_text.text(f"Episode {ep}/{episodes} | Avg Reward: {avg_reward:.1f} | ε: {agent.epsilon:.3f}")
-            
-            progress_bar.empty()
-            status_text.empty()
-            st.success(f"Training Complete! Final Average Reward: {np.mean(rewards_history[-50:]):.1f}")
-            st.session_state['episode'] = episodes
-        
-        if st.button("🔄 Reset Agent", use_container_width=True):
-            st.session_state['agent'] = QLearningAgent(grid_size=5)
-            st.rerun()
+                for ep in range(50):
+                    state = env.reset()
+                    episode_reward = 0
+                    step_count = 0
+                    max_steps = 50
+                    
+                    while step_count < max_steps:
+                        action = agent.get_action(state)
+                        next_state, reward, done = env.step(action)
+                        agent.update(state, action, reward, next_state, done)
+                        
+                        episode_reward += reward
+                        state = next_state
+                        step_count += 1
+                        
+                        if done:
+                            break
+                    
+                    agent.decay_epsilon()
+                    st.session_state['training_rewards'].append(episode_reward)
+                    
+                    progress_bar.progress((ep + 1) / 50)
+                    status_text.text(f"Episode {ep + 1}/50 | Reward: {episode_reward:+.0f} | ε: {agent.epsilon:.3f}")
+                
+                st.session_state['episode_count'] += 50
+                env.reset()
+                st.success("Training Complete!")
+                st.rerun()
     
-    with col_viz:
-        st.subheader("🗺️ GridWorld")
+    with col_right:
+        st.subheader("2. The Robot's Brain (Q-Table)")
         
-        # Show current grid
-        st.markdown(render_grid(env, env.agent_pos), unsafe_allow_html=True)
+        st.write("**What is this?** The Q-Table is the robot's memory. Each cell shows:")
+        st.write("- **Arrow**: Best action to take from that position")
+        st.write("- **Q-value**: How good that position is")
+        
+        # Q-table visualization
+        qtable_placeholder = st.empty()
+        qtable_placeholder.markdown(render_q_table(agent, env), unsafe_allow_html=True)
         
         st.write("---")
-        st.subheader("🧠 Q-Table (Agent's Brain)")
         
-        st.write("**How to read:** Each cell shows the best action: ⬆️ ⬇️ ⬅️ ➡️")
+        # Stats
+        st.metric("Episodes Trained", st.session_state['episode_count'])
+        st.metric("Exploration Rate (ε)", f"{agent.epsilon:.3f}", 
+                 help="Probability of taking random action vs best known action")
         
-        # Visualize Q-Table as a grid with arrows
-        q_grid_html = "<div style='font-family: monospace; font-size: 0.8rem;'>"
-        actions_emoji = ["⬆️", "⬇️", "⬅️", "➡️"]
+        if st.session_state['training_rewards']:
+            recent_avg = np.mean(st.session_state['training_rewards'][-10:])
+            st.metric("Avg Reward (Last 10)", f"{recent_avg:+.1f}")
         
-        for i in range(env.size):
-            q_grid_html += "<div>"
-            for j in range(env.size):
-                q_values = agent.q_table[i, j]
-                best_action = np.argmax(q_values)
-                max_q = q_values[best_action]
-                
-                # Color based on Q-value
-                if max_q > 50:
-                    bg_color = "#d1fae5"  # Green for high value
-                elif max_q < -50:
-                    bg_color = "#fee2e2"  # Red for low value
-                else:
-                    bg_color = "#f9fafb"
-                
-                q_grid_html += f"""
-                <div style='width: 70px; height: 70px; border: 2px solid #ddd; display: inline-block; 
-                            margin: 2px; text-align: center; background-color: {bg_color}; border-radius: 8px;
-                            padding: 5px;'>
-                    <div style='font-size: 1.5rem;'>{actions_emoji[best_action]}</div>
-                    <div style='font-size: 0.7rem; color: #666;'>Q:{max_q:.1f}</div>
-                </div>
-                """
-            q_grid_html += "</div>"
-        
-        q_grid_html += "</div>"
-        st.markdown(q_grid_html, unsafe_allow_html=True)
+        if st.button("🔄 Reset Everything", use_container_width=True):
+            st.session_state['env'] = GridWorld(size=5)
+            st.session_state['agent'] = QLearningAgent(grid_size=5)
+            st.session_state['episode_count'] = 0
+            st.session_state['training_rewards'] = []
+            st.rerun()
 
 with tab2:
     st.markdown("## 🧠 What is Reinforcement Learning?")
     
     st.info("""
-    Imagine teaching a dog a trick. You don't explain calculus to the dog. You just say:
-    - **Do the trick correctly → Get a treat 🍖**
-    - **Do it wrong → No treat (or worse, punishment)**
+    Imagine teaching a puppy where to find its food bowl. You don't give it a map. 
+    You let it explore the house. When it finds the bowl → **Treat!** 🍖  
+    When it goes near the trash → **No!** 👎
     
-    The dog **learns by trial and error**. That's Reinforcement Learning!
+    Eventually, the puppy learns the optimal path. That's **Reinforcement Learning**!
     """)
     
     st.divider()
     
-    st.markdown("### 1. The Core Concept")
+    st.markdown("### 1. The Core Loop")
     
-    col_rl1, col_rl2 = st.columns(2)
+    col_loop1, col_loop2 = st.columns([1, 1])
     
-    with col_rl1:
-        st.write("**The Loop:**")
+    with col_loop1:
+        st.write("**The Process:**")
         st.code("""
-1. Agent observes State
-2. Agent takes Action
-3. Environment gives Reward
-4. Agent learns from Feedback
-5. Repeat
-        """)
+1. Robot observes STATE
+   (Where am I?)
+
+2. Robot takes ACTION  
+   (Up, Down, Left, Right)
+
+3. Environment gives REWARD
+   (+100, -100, or -1)
+
+4. Robot learns from experience
+   (Updates Q-Table)
+
+5. Repeat until done
+        """, language="")
     
-    with col_rl2:
+    with col_loop2:
         st.write("**The Goal:**")
         st.write("""
-        Maximize **Total Reward** over time.
+        Maximize **cumulative reward** over time.
         
-        Not just immediate reward, but **future rewards** too!
+        Not just immediate reward, but **all future rewards** too!
         
-        This is why the robot doesn't rush to the bomb (immediate -100) 
-        but instead takes the long path to the treasure (+100).
+        This is why the robot learns to avoid the trap even though 
+        it might be tempting to explore there initially.
         """)
     
     st.divider()
     
-    st.markdown("### 2. The Q-Table: The Cheat Sheet")
+    st.markdown("### 2. The Q-Table Explained")
     
     st.write("""
-    The **Q-Table** is the agent's brain. For every (**State**, **Action**) pair, it stores a **Q-Value**.
-    
-    **Q-Value** = "How good is this action in this state?"
+    The **Q-Table** is like the robot's cheat sheet. For every position and action, 
+    it remembers: *"How good is it to do this action here?"*
     """)
     
-    st.latex(r"Q(state, action) \rightarrow \text{Expected Future Reward}")
+    st.latex(r"Q(state, action) = \text{Expected Total Future Reward}")
     
-    st.write("""
-    **Example:**
-    - Q(Top-Left, →) = 85.3 → "Moving right from top-left is good!"
-    - Q(Bottom-Left, ↑) = -95.2 → "Moving up from bottom-left is bad (leads to bomb)"
-    """)
-    
-    st.divider()
-    
-    st.markdown("### 3. The Q-Learning Update Formula")
-    
-    st.write("This is the magic equation that makes the agent learn:")
-    
-    st.latex(r"Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma \max Q(s', a') - Q(s, a)]")
-    
-    st.write("**Breaking it down:**")
-    
-    col_q1, col_q2 = st.columns(2)
-    
-    with col_q1:
-        st.markdown("""
-        - **s**: Current state
-        - **a**: Action taken
-        - **r**: Reward received
-        - **s'**: Next state
-        - **α (alpha)**: Learning rate (0-1)
-        """)
-    
-    with col_q2:
-        st.markdown("""
-        - **γ (gamma)**: Discount factor (0-1)
-        - **max Q(s', a')**: Best Q-value in next state
-        
-        **The Formula Says:**
-        "Update my guess based on the difference between reality and expectation"
-        """)
-    
-    st.divider()
-    
-    st.markdown("### 4. Exploration vs Exploitation")
-    
-    st.write("**The Dilemma:** Should the agent:")
-    
+    st.write("**Example Values:**")
     col_ex1, col_ex2 = st.columns(2)
     
     with col_ex1:
-        st.markdown("""
-        **🎲 Explore (ε-greedy)**
-        - Try random actions
-        - Discover new strategies
-        - Might find shortcuts
-        - **Risk:** Wastes time on bad moves
-        """)
+        st.success("Q((0,0), RIGHT) = +85.3")
+        st.caption("✅ Moving right from top-left is GREAT! (leads toward goal)")
     
     with col_ex2:
+        st.error("Q((4,1), UP) = -92.1")
+        st.caption("❌ Moving up from bottom row is TERRIBLE! (leads to trap)")
+    
+    st.divider()
+    
+    st.markdown("### 3. The Learning Formula (Bellman Equation)")
+    
+    st.write("This is the **magic equation** that makes learning happen:")
+    
+    st.latex(r"Q(s, a) \leftarrow Q(s, a) + \alpha [r + \gamma \max_{a'} Q(s', a') - Q(s, a)]")
+    
+    st.write("**Breaking it down:**")
+    
+    col_formula1, col_formula2 = st.columns(2)
+    
+    with col_formula1:
         st.markdown("""
-        **🎯 Exploit**
-        - Use best known action
-        - Play it safe
-        - Maximize current knowledge
-        - **Risk:** Miss better strategies
+        **Variables:**
+        - **s**: Current state (position)
+        - **a**: Action taken
+        - **r**: Immediate reward received
+        - **s'**: New state after action
+        - **α (alpha)**: Learning rate (0-1)
+        - **γ (gamma)**: Discount factor (0-1)
         """)
     
-    st.write("""
+    with col_formula2:
+        st.markdown("""
+        **What it means:**
+        
+        "Update my guess by comparing:
+        - What I **expected** to get
+        - What I **actually** got (reward + best future)"
+        
+        If reality is better → increase Q-value  
+        If reality is worse → decrease Q-value
+        """)
+    
+    st.divider()
+    
+    st.markdown("### 4. Exploration vs Exploitation (ε-greedy)")
+    
+    st.write("**The Dilemma:** Should the robot...")
+    
+    col_expl1, col_expl2 = st.columns(2)
+    
+    with col_expl1:
+        st.markdown("""
+        **🎲 EXPLORE (Random Actions)**
+        - Try new paths
+        - Might discover shortcuts
+        - Learn about the world
+        
+        **Risk:** Waste time on bad moves
+        """)
+    
+    with col_expl2:
+        st.markdown("""
+        **🎯 EXPLOIT (Best Known Action)**
+        - Use current knowledge
+        - Play it safe
+        - Maximize rewards
+        
+        **Risk:** Never find better strategies
+        """)
+    
+    st.info("""
     **Solution: ε (Epsilon) Greedy**
-    - Start with ε = 1.0 (100% exploration)
-    - Gradually decay to ε = 0.01 (1% exploration)
-    - This way, the agent explores early, then exploits later
+    
+    - Start with ε = 1.0 (100% exploration - robot is clueless)
+    - Gradually decay to ε = 0.01 (1% exploration - robot is expert)
+    
+    This way: **Explore early, exploit later!**
     """)
     
     st.divider()
     
-    st.markdown("### 5. Key Concepts Summary")
+    st.markdown("### 5. Hyperparameters Explained")
     
-    st.info("""
-    **State**: Where the agent is (position in grid)
+    col_hyper1, col_hyper2 = st.columns(2)
     
-    **Action**: What the agent can do (up, down, left, right)
+    with col_hyper1:
+        st.markdown("""
+        **Learning Rate (α)**
+        - α = 0 → Never learn (stuck)
+        - α = 1 → Only remember latest experience (unstable)
+        - α = 0.1 → **Typical choice** (gradual learning)
+        """)
+        
+        st.markdown("""
+        **Discount Factor (γ)**
+        - γ = 0 → Only care about immediate reward (greedy)
+        - γ = 1 → Value all future rewards equally
+        - γ = 0.9 → **Typical choice** (balanced)
+        """)
     
-    **Reward**: Feedback from environment (+100, -100, -1)
-    
-    **Policy**: The agent's strategy (Q-table tells us best action per state)
-    
-    **Episode**: One full game from start to treasure/bomb
-    
-    **Discount Factor (γ)**: 
-    - γ = 0 → Only care about immediate reward
-    - γ = 1 → Care equally about all future rewards
-    - γ = 0.9 → Balance (typical choice)
-    
-    **Learning Rate (α)**:
-    - α = 0 → Never learn
-    - α = 1 → Forget everything except latest experience
-    - α = 0.1 → Gradual learning (typical choice)
-    """)
+    with col_hyper2:
+        st.markdown("""
+        **Exploration Rate (ε)**
+        - Starts high (explore unknown)
+        - Decays over time
+        - Minimum value prevents getting stuck
+        """)
+        
+        st.markdown("""
+        **Why -1 for each step?**
+        - Encourages shortest path
+        - Without it, robot might wander aimlessly
+        - Makes reaching goal quickly more valuable
+        """)

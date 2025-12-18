@@ -273,13 +273,10 @@ with tab1:
 with tab2:
     st.markdown("## 🧠 Under the Hood: The Polynomial Trick")
     
-    st.markdown("""
-    <div class="theory-box">
-    Polynomial Regression is a master of disguise. Mathematically, 
-    <b>it is still Linear Regression</b>. 
+    st.info("""
+    Polynomial Regression is a master of disguise. Mathematically, **it is still Linear Regression**. 
     It just cheats by creating "fake" features.
-    </div>
-    """, unsafe_allow_html=True)
+    """)
     
     st.markdown("### 1. The 'Hack' (Feature Engineering)")
     st.write("""

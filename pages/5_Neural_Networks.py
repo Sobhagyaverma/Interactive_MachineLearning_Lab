@@ -239,16 +239,13 @@ with tab2:
     
     # --- SECTION 1: THE NEURON ---
     st.markdown("### 1. The Artificial Neuron (Perceptron)")
-    st.markdown("""
-    <div class="theory-box">
+    
+    st.info("""
     Every neuron is a tiny decision-making unit. It does three simple steps:
-    <ol>
-        <li><b>Weigh the Input:</b> How important is this input? (Multiply by Weight $W$)</li>
-        <li><b>Add Bias:</b> Should I be active by default? (Add Bias $b$)</li>
-        <li><b>Decide:</b> Is the signal strong enough to fire? (Apply Activation Function $\sigma$)</li>
-    </ol>
-    </div>
-    """, unsafe_allow_html=True)
+    1. **Weigh the Input:** How important is this input? (Multiply by Weight $W$)
+    2. **Add Bias:** Should I be active by default? (Add Bias $b$)
+    3. **Decide:** Is the signal strong enough to fire? (Apply Activation Function $\sigma$)
+    """)
     
     col_math, col_text = st.columns([1, 2])
     with col_math:

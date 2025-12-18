@@ -250,15 +250,13 @@ with tab1:
 with tab2:
     st.markdown("## 🧠 Under the Hood: The Maximum Margin")
     
-    st.markdown("""
-    <div class="theory-box">
-    <b>Analogy:</b> Imagine two warring villages (Blue vs Green). 
-    SVM tries to build a road between them that is <b>as wide as possible</b> to prevent conflict.
-    <br><br>
+    st.info("""
+    **Analogy:** Imagine two warring villages (Blue vs Green). 
+    SVM tries to build a road between them that is **as wide as possible** to prevent conflict.
+    
     The "Support Vectors" are the houses right on the edge of the road. 
     They are the only ones that matter! If you move the houses in the back, the road doesn't change.
-    </div>
-    """, unsafe_allow_html=True)
+    """)
     
     # --- SECTION 1: GEOMETRY ---
     st.markdown("### 1. The Geometry of the Street")

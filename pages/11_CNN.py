@@ -169,28 +169,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- MAIN LAYOUT ---
-col_draw, col_process = st.columns([1, 2])
-
-with col_draw:
-    st.subheader("1. Input: Draw Here")
-    st.info("Draw a digit 0-9. **Draw BIG** and centered for best results!")
-    
-    # Improved Canvas
-    canvas_result = st_canvas(
-        fill_color="black",
-        stroke_width=25,  # Thicker brush
-        stroke_color="white",
-        background_color="black",
-        height=280,
-        width=280,
-        drawing_mode="freedraw",
-        key="canvas",
-    )
-    
-    if st.button("🗑️ Clear Canvas", use_container_width=True): 
-        st.rerun()
-
-# --- MAIN LAYOUT ---
 st.info("✍️ Draw a digit (0-9). **Draw BIG and centered** for best results! The AI will predict in real-time.")
 
 col_draw, col_predict = st.columns([1, 1])

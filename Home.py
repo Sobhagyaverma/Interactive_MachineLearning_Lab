@@ -189,6 +189,13 @@ with col5:
         st.write("###")
         st.page_link("pages/11_CNN.py", label="Start Experiment", icon="🚀", use_container_width=True)
 
+with col6:
+    with st.container(border=True):
+        st.markdown("### 🎮 Q-Learning (RL)")
+        st.markdown("Train an agent to navigate a maze. Watch it learn through trial and error!")
+        st.write("###")
+        st.page_link("pages/12_Reinforcement_Learning.py", label="Start Experiment", icon="🚀", use_container_width=True)
+
 
 st.divider()
 

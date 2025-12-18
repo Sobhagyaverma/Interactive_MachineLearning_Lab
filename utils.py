@@ -59,6 +59,11 @@ def navbar():
             st.page_link("pages/10_Random_Forest.py", label="🌲 Random Forest", use_container_width=True)
         with col4:
             st.page_link("pages/11_CNN.py", label="👁️ CNN", use_container_width=True)
+        
+        # Row 4: RL
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.page_link("pages/12_Reinforcement_Learning.py", label="🎮 Q-Learning", use_container_width=True)
     
     st.divider()
 

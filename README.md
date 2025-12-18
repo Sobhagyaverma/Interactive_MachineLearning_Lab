@@ -2,31 +2,47 @@
 
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)](https://streamlit.io/)
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
 
-**"Glass Box" AI: Build the engine, see the magic.**
+**"See it. Play with it. Understand it."**
 
-An interactive web application that helps you understand machine learning algorithms from first principles. No black boxes—just pure math, visualization, and intuition.
+An **interactive, visual, and hands-on** platform to learn Machine Learning algorithms from scratch. No black boxes—just pure understanding through experimentation!
+
+## 🎯 Philosophy
+
+This isn't just another ML tutorial. It's an **interactive laboratory** where you can:
+- 🎮 **Play** with real algorithms in real-time
+- 👀 **Visualize** exactly what's happening under the hood
+- 🧠 **Learn** the theory and math behind each algorithm
+- 🔬 **Experiment** with different parameters and datasets
 
 ## ✨ Features
 
-- **🎮 Interactive Playgrounds**: Experiment with real-time parameters and visualize algorithm behavior
-- **📊 Live Visualizations**: Watch algorithms learn step-by-step with dynamic plots
-- **🧠 Theory & Math**: Understand the mathematics behind each algorithm
-- **🔬 From Scratch**: Pure NumPy implementations—no ML frameworks
-- **🌐 Web-Based**: Run entirely in your browser with Streamlit
+### � 12 Interactive Algorithm Playgrounds
 
-## 🚀 Available Algorithms
+1. **📏 Linear Regression** - Watch the line fit your data points in real-time
+2. **🧬 Logistic Regression** - Interactive breast cancer diagnosis with probability visualization
+3. **📍 K-Nearest Neighbors (KNN)** - Classify points and see decision boundaries live
+4. **✨ K-Means Clustering** - Animate cluster formation step-by-step
+5. **🧠 Neural Networks** - Interactive playground with live neuron activation visualization
+6. **📈 Polynomial Regression** - See how different degrees fit curved data
+7. **⚔️ Support Vector Machine (SVM)** - Visualize the "maximum margin street" concept
+8. **🎲 Naive Bayes** - Interactive classification with probability explanations
+9. **� Decision Tree** - Visualize tree splits and decision boundaries
+10. **🌲 Random Forest** - See ensemble learning in action
+11. **�️ Convolutional Neural Network (CNN)** - Draw digits and watch live predictions with MNIST
+12. **🎮 Q-Learning (Reinforcement Learning)** - Watch an agent learn to navigate a maze
 
-### Supervised Learning
-- **📏 Linear Regression**: Fit a line to data and predict continuous values
-- **🧬 Logistic Regression**: Binary classification with the sigmoid function
-- **📍 K-Nearest Neighbors (KNN)**: Classify based on proximity to neighbors
+### 🎯 What Makes This Special?
 
-### Unsupervised Learning
-- **✨ K-Means Clustering**: Discover hidden patterns in unlabeled data
+- **🔍 Glass Box Approach**: Every algorithm shows you exactly what's happening internally
+- **🎚️ Interactive Controls**: Adjust hyperparameters and see immediate effects
+- **� Real-time Visualization**: Watch algorithms learn and make decisions
+- **📚 Theory + Practice**: Each page includes comprehensive math explanations
+- **🎨 Beautiful UI**: Modern, responsive design with smooth animations
+- **🚀 Live Predictions**: Draw, click, or interact to get instant results
 
-## 🛠️ Installation
+## � Getting Started
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -35,111 +51,135 @@ An interactive web application that helps you understand machine learning algori
 ### Installation
 
 1. **Clone the repository**
-   ```
+```bash
+git clone https://github.com/Sobhagyaverma/Interactive_MachineLearning_Lab.git
+cd Interactive_MachineLearning_Lab
+```
+
+2. **Create a virtual environment (recommended)**
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
 3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+pip install -r requirements.txt
+```
 
 4. **Run the application**
-   ```bash
-   streamlit run Home.py
-   ```
+```bash
+streamlit run Home.py
+```
 
-5. **Open your browser**
-   
-   The app should automatically open at `http://localhost:8501`
+5. **Open in browser**
+The app will automatically open at `http://localhost:8501`
 
-## 📚 Project Structure
+## 🎓 Learning Path
+
+### Beginner-Friendly Start
+1. **Linear Regression** - Understand the foundation of ML
+2. **Logistic Regression** - Learn classification basics
+3. **K-Means** - Grasp unsupervised learning
+
+### Intermediate Exploration
+4. **KNN** - Distance-based classification
+5. **Decision Tree** - Tree-based learning
+6. **Naive Bayes** - Probabilistic classification
+
+### Advanced Topics
+7. **Neural Networks** - Deep learning fundamentals
+8. **SVM** - Kernel methods and optimization
+9. **Random Forest** - Ensemble methods
+10. **CNN** - Computer vision basics
+11. **Q-Learning** - Reinforcement learning
+
+## �️ Tech Stack
+
+- **Frontend**: Streamlit
+- **ML Libraries**: scikit-learn, NumPy
+- **Visualization**: Matplotlib, Seaborn, Plotly
+- **Computer Vision**: OpenCV
+- **Canvas Drawing**: streamlit-drawable-canvas
+
+## 📁 Project Structure
 
 ```
 Interactive_MachineLearning_Lab/
-├── Home.py                          # Landing page
-├── pages/                           # Algorithm pages
+├── Home.py                              # Landing page
+├── pages/                               # Algorithm pages
 │   ├── 1_Linear_Regression.py
 │   ├── 2_Logistic_Regression.py
 │   ├── 3_KNN.py
-│   └── 4_KMeans.py
-├── models/                          # ML implementations
-│   ├── linear_regression.py
-│   ├── logistic_regression.py
-│   ├── knn.py
-│   └── kmeans.py
-├── utils.py                         # Shared utilities
-└── .streamlit/                      # Streamlit config
+│   ├── 4_KMeans.py
+│   ├── 5_Neural_Networks.py
+│   ├── 6_Polynomial_Regression.py
+│   ├── 7_SVM.py
+│   ├── 8_Naive_Bayes.py
+│   ├── 9_Decision_Tree.py
+│   ├── 10_Random_Forest.py
+│   ├── 11_CNN.py
+│   └── 12_Reinforcement_Learning.py
+├── utils.py                             # Shared utilities & navbar
+├── requirements.txt                     # Dependencies
+└── .streamlit/                          # Streamlit configuration
     └── config.toml
 ```
 
-## 🎯 How It Works
+## 🎯 Key Features by Algorithm
 
-### Philosophy
-1. **No Magic**: Pure NumPy implementations from scratch
-2. **Visuals**: Real-time interactive plots using Plotly
-3. **Intuition**: Understand *why* it works, not just *how*
+### CNN (Digit Recognition)
+- ✍️ **Draw digits** directly on canvas
+- 🔮 **Real-time prediction** as you draw
+- 📊 **Preprocessing visualization** - see how the image is processed
+- 🧠 **Convolution filters** - experiment with edge detection
+- 📚 **Comprehensive theory** explaining CNNs from scratch
 
-### Learning Path
-1. **Explore**: Play with the interactive controls
-2. **Observe**: Watch the algorithm learn in real-time
-3. **Understand**: Read the theory to grasp the mathematics
-4. **Experiment**: Adjust parameters and see what happens
+### Q-Learning (Reinforcement Learning)
+- 🤖 **Interactive maze environment** with treasure and traps
+- 🎬 **Watch live episodes** - see the agent learn step-by-step
+- � **Q-Table visualization** - observe the agent's knowledge grow
+- 📈 **Training progress** - track rewards and exploration rate
+- 🎮 **Three modes**: Single step, Watch episode, Fast train
 
-## 🖼️ Screenshots
+### Neural Networks
+- 🎨 **Interactive playground** with adjustable architecture
+- 👁️ **Neuron activation** - see weights and biases in action
+- 📊 **Decision boundary** visualization
+- 🎚️ **Real-time training** with live loss tracking
 
-<!-- Add screenshots here when available -->
+## 🎨 UI/UX Features
+
+- **Modern Design**: Gradient backgrounds, smooth animations
+- **Responsive Layout**: Works on desktop and tablets
+- **Tab Navigation**: Clean separation of Playground and Theory
+- **Hero Sections**: Beautiful introduction to each algorithm
+- **Interactive Controls**: Intuitive sliders and buttons
+- **Visual Feedback**: Toasts, success messages, and animations
 
 ## 🤝 Contributing
 
-Contributions are welcome! If you'd like to add new algorithms or improve existing ones:
+Contributions are welcome! Whether it's:
+- 🐛 Bug fixes
+- ✨ New algorithm implementations
+- 📖 Documentation improvements
+- 🎨 UI/UX enhancements
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-algorithm`)
-3. Commit your changes (`git commit -m 'Add new algorithm'`)
-4. Push to the branch (`git push origin feature/new-algorithm`)
-5. Open a Pull Request
+Please feel free to submit a Pull Request!
 
-## 📝 To-Do
+## � License
 
-### Supervised Learning
-- [ ] Polynomial Regression: Non-linear regression using polynomial features
-- [ ] Support Vector Machines (SVM): Maximum margin classifiers
-- [ ] Naive Bayes: Probabilistic classification based on Bayes' theorem
-- [ ] Decision Trees: Flowchart-like structure of "if-then" rules
-- [ ] Random Forest: Ensemble of decision trees for improved accuracy
-- [ ] XGBoost / LightGBM: High-performance gradient boosting algorithms
+This project is open source and available under the MIT License.
 
-### Deep Learning
-- [ ] Neural Networks (Multi-Layer Perceptron): Fully connected neural networks
-- [ ] Convolutional Neural Networks (CNN): For image recognition and computer vision
-- [ ] Recurrent Neural Networks (RNN): For sequential data and time series
+## 🌟 Acknowledgments
 
-### Reinforcement Learning
-- [ ] Q-Learning: Basic value-based reinforcement learning
+Built with ❤️ to make Machine Learning accessible and fun for everyone!
 
-### Unsupervised Learning
-- [ ] Principal Component Analysis (PCA): Dimensionality reduction technique
-
-### Features
-- [ ] Add more visualizations
-- [ ] Export trained models
-- [ ] Model comparison tool
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 👤 Author
+## 📬 Contact
 
 **Sobhagya Verma**
-
 - GitHub: [@Sobhagyaverma](https://github.com/Sobhagyaverma)
-
-## 🙏 Acknowledgments
-
-- Built with [Streamlit](https://streamlit.io/)
-- Visualizations powered by [Plotly](https://plotly.com/)
-- Mathematical computations with [NumPy](https://numpy.org/)
 
 ---
 
-⭐ If you found this project helpful, please give it a star!
+**Star ⭐ this repository if you found it helpful!**

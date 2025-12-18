@@ -190,17 +190,68 @@ with col_draw:
     if st.button("🗑️ Clear Canvas", use_container_width=True): 
         st.rerun()
 
+# --- MAIN LAYOUT ---
+st.info("✍️ Draw a digit (0-9). **Draw BIG and centered** for best results! The AI will predict in real-time.")
+
+col_draw, col_predict = st.columns([1, 1])
+
+with col_draw:
+    st.subheader("📝 Draw Here")
+    
+    # Improved Canvas
+    canvas_result = st_canvas(
+        fill_color="black",
+        stroke_width=25,  # Thicker brush
+        stroke_color="white",
+        background_color="black",
+        height=280,
+        width=280,
+        drawing_mode="freedraw",
+        key="canvas",
+    )
+    
+    if st.button("🗑️ Clear Canvas", use_container_width=True): 
+        st.rerun()
+
 input_img = process_canvas(canvas_result)
 
-with col_process:
-    st.subheader("2. Computer Vision Pipeline")
+with col_predict:
+    st.subheader("🔮 Prediction")
     
-    tab1, tab2, tab3 = st.tabs(["👁️ Convolution (Filters)", "🧠 Neuron Math (Glass Box)", "🔮 Prediction"])
+    # Real-time Prediction
+    flat_input = input_img.flatten().reshape(1, -1)
+    scores = model.predict_proba(flat_input)[0]
+    prediction = np.argmax(scores)
+    confidence = scores[prediction]
     
-    # --- TAB 1: FILTERS ---
-    with tab1:
-        st.write("Apply filters to detect edges.")
-        filter_type = st.selectbox("Choose Filter", ["Vertical Edge", "Horizontal Edge", "Sharpen", "Outline"])
+    # Big prediction display
+    st.markdown(f"""
+    <div style='text-align: center; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; margin-bottom: 1rem;'>
+        <div style='font-size: 4rem; font-weight: 800; color: white;'>{prediction}</div>
+        <div style='font-size: 1.2rem; color: #f0f0f0;'>Confidence: {confidence*100:.1f}%</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Processed image preview
+    st.write("**How the AI sees it (28x28 preprocessed):**")
+    fig_preview, ax_preview = plt.subplots(figsize=(3, 3))
+    ax_preview.imshow(input_img, cmap='gray')
+    ax_preview.axis('off')
+    st.pyplot(fig_preview)
+    plt.close(fig_preview)
+
+# --- TABS FOR ADVANCED FEATURES ---
+st.divider()
+tab1, tab2 = st.tabs(["🔬 Advanced: Filters & Neurons", "📚 Theory & Math"])
+
+with tab1:
+    st.subheader("Computer Vision Pipeline")
+    
+    col_f1, col_f2, col_f3 = st.columns(3)
+    
+    with col_f1:
+        st.write("**1. Choose Filter**")
+        filter_type = st.selectbox("Filter Type", ["Vertical Edge", "Horizontal Edge", "Sharpen", "Outline"], label_visibility="collapsed")
         
         kernels = {
             "Vertical Edge": np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]]),
@@ -210,72 +261,150 @@ with col_process:
         }
         selected_kernel = kernels[filter_type]
         
-        # Simple Convolution Loop
-        h, w = input_img.shape
-        kh, kw = selected_kernel.shape
-        output_map = np.zeros((h-kh+1, w-kw+1))
-        
-        for y in range(output_map.shape[0]):
-            for x in range(output_map.shape[1]):
-                patch = input_img[y:y+kh, x:x+kw]
-                output_map[y, x] = np.sum(patch * selected_kernel)
-        
-        c1, c2, c3 = st.columns(3)
-        with c1: st.image(input_img, caption="Processed Input (Centered)", width=150, clamp=True)
-        with c2: 
-            st.write("**Filter**")
-            st.write(selected_kernel)
-        with c3:
-            disp_map = np.maximum(0, output_map)
-            disp_map = disp_map / (disp_map.max() + 1e-8)
-            st.image(disp_map, caption="Feature Map", width=150, clamp=True)
-
-    # --- TAB 2: NEURON INSPECTOR ---
-    with tab2:
-        st.info("Hover logic simulated: Inspecting the Center Pixel.")
-        bias_val = st.slider("Neuron Bias", -5.0, 5.0, 0.0)
-        
+        st.write("**Kernel:**")
+        st.write(selected_kernel)
+    
+    with col_f2:
+        st.write("**2. Input Patch (Center)**")
+        # Show a 3x3 patch from center
         cy, cx = 14, 14
         patch = input_img[cy:cy+3, cx:cx+3]
+        st.image(patch, width=100, clamp=True)
+        
+    with col_f3:
+        st.write("**3. Convolution Result**")
+        bias_val = st.slider("Add Bias", -2.0, 2.0, 0.0, key="bias_slider")
         weighted_sum, total, activation = convolve_step(patch, selected_kernel, bias_val)
         
-        c_n1, c_n2, c_n3 = st.columns(3)
-        with c_n1: 
-            st.image(patch, width=80, clamp=True)
-            st.caption("Input Patch")
-        with c_n2: 
-            st.image(selected_kernel, width=80, clamp=True)
-            st.caption("Weights")
-        with c_n3:
-            st.metric("Output", f"{activation:.2f}")
-            st.latex(r"ReLU(\sum (X \cdot W) + b)")
+        st.metric("Output", f"{activation:.2f}")
+        st.caption("ReLU(Σ(X·W) + b)")
 
-    # --- TAB 3: PREDICTION (IMPROVED) ---
-    with tab3:
-        # Prediction
-        flat_input = input_img.flatten().reshape(1, -1)
-        scores = model.predict_proba(flat_input)[0]
-        prediction = np.argmax(scores)
+with tab2:
+    st.markdown("## 🧠 What is a Convolutional Neural Network?")
+    
+    st.info("""
+    A CNN is like a **detective with a magnifying glass** scanning an image for patterns.
+    Instead of looking at the whole image at once, it examines small patches (like a 3×3 window)
+    and learns to recognize features like edges, curves, and textures.
+    """)
+    
+    st.divider()
+    
+    st.markdown("### 1. Convolution: The Scanning Process")
+    
+    st.write("""
+    Imagine you have a filter (kernel) that detects vertical edges. 
+    The CNN slides this filter across the entire image, one patch at a time.
+    """)
+    
+    col_theory1, col_theory2 = st.columns([1, 1])
+    
+    with col_theory1:
+        st.write("**The Math:**")
+        st.latex(r"Output_{(i,j)} = \sum_{m,n} Input_{(i+m, j+n)} \times Kernel_{(m,n)}")
+        st.write("""
+        - **Input**: A small patch (e.g., 3×3 pixels)
+        - **Kernel/Filter**: Learned weights (also 3×3)
+        - **Output**: Element-wise multiply and sum
+        """)
+    
+    with col_theory2:
+        st.write("**Why It Works:**")
+        st.write("""
+        - **Local Patterns**: Nearby pixels are related (a curve, an edge)
+        - **Weight Sharing**: The same filter is used everywhere (efficiency!)
+        - **Translation Invariance**: A "2" in the top-left looks the same as a "2" in the bottom-right
+        """)
+    
+    st.divider()
+    
+    st.markdown("### 2. Filters: What Do They Detect?")
+    
+    st.write("""
+    Different filters detect different features:
+    - **Edge Detectors**: Highlight boundaries where brightness changes
+    - **Texture Detectors**: Recognize patterns like dots, stripes
+    - **High-Level Features**: In deep networks, later layers combine edges to detect noses, wheels, letters
+    """)
+    
+    st.code("""
+Vertical Edge Filter:
+[[-1,  0,  1],
+ [-1,  0,  1],
+ [-1,  0,  1]]
+ 
+Explanation:
+- Left side (negative): Dark pixels
+- Right side (positive): Bright pixels
+- If there's a brightness jump → Output is HIGH
+    """)
+    
+    st.divider()
+    
+    st.markdown("### 3. ReLU: The Activation Function")
+    
+    st.write("After convolution, we apply **ReLU (Rectified Linear Unit)**:")
+    st.latex(r"ReLU(x) = \max(0, x)")
+    
+    st.write("""
+    **Why?** 
+    - It introduces non-linearity (allows the network to learn complex patterns)
+    - It's simple and fast to compute
+    - Negative values become 0 (only keep "activated" features)
+    """)
+    
+    st.divider()
+    
+    st.markdown("### 4. How This Page Works")
+    
+    st.info("""
+    **This demo uses Logistic Regression (not a true CNN)** for speed and simplicity.
+    
+    **What we're showing:**
+    1. **Preprocessing**: Your drawing → Centered 28×28 image (matching MNIST format)
+    2. **Convolution Demo**: Apply a filter to see how edge detection works
+    3. **Classification**: A trained model predicts which digit (0-9) you drew
+    
+    **A real CNN would:**
+    - Have multiple convolutional layers (10-100+ filters per layer)
+    - Use pooling (downsampling) to reduce image size
+    - Stack layers: Conv → ReLU → Pool → Conv → ReLU → Pool → Fully Connected → Output
+    
+    **Fun Fact:** The model was trained on 10,000 MNIST digits in just a few seconds!
+    """)
+    
+    st.divider()
+    
+    st.markdown("### 5. Key Concepts Summary")
+    
+    col_c1, col_c2 = st.columns(2)
+    
+    with col_c1:
+        st.markdown("""
+        **Convolution:**
+        - Slide filter over image
+        - Multiply + Sum
+        - Detect local patterns
+        """)
         
-        st.success(f"Model Prediction: **{prediction}** (Confidence: {scores[prediction]*100:.1f}%)")
+        st.markdown("""
+        **Padding:**
+        - Add borders to image
+        - Prevent shrinking
+        - Preserve edge info
+        """)
+    
+    with col_c2:
+        st.markdown("""
+        **Pooling:**
+        - Downsample feature maps
+        - Reduce computation
+        - Add translation invariance
+        """)
         
-        st.write("### 🧠 The Learned Weights")
-        st.write("These heatmaps show what the model *looks for* in each digit.")
-        st.write("* **Red:** Negative Weight (Should be black)")
-        st.write("* **Blue:** Positive Weight (Should be white)")
-
-        # Visualize Top 3
-        top_3 = np.argsort(scores)[::-1][:3]
-        cols = st.columns(3)
-        
-        for i, idx in enumerate(top_3):
-            with cols[i]:
-                w_img = weights[idx].reshape(28, 28)
-                fig, ax = plt.subplots(figsize=(2,2))
-                max_abs = np.max(np.abs(w_img))
-                ax.imshow(w_img, cmap='coolwarm', vmin=-max_abs, vmax=max_abs)
-                ax.axis('off')
-                st.pyplot(fig)
-                
-                st.caption(f"Weights for '{idx}'")
-                st.progress(float(scores[idx]))
+        st.markdown("""
+        **Why CNNs Win:**
+        - Spatial awareness
+        - Parameter sharing
+        - Hierarchical learning
+        """)

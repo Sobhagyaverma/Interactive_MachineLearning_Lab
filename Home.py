@@ -139,9 +139,9 @@ with col1:
 with col2:
     with st.container(border=True):
         st.markdown("### 🧠 Neural Networks")
-        st.markdown("*Coming Soon...* Build a multi-layer perceptron from scratch.")
+        st.markdown("Build a multi-layer perceptron from scratch.")
         st.write("###")
-        st.button("Coming Soon", disabled=True, key="nn_btn", use_container_width=True)
+        st.page_link("pages/5_Neural_Networks.py", label="Start Experiment", icon="🚀", use_container_width=True)
 
 with col3:
     # Placeholder for future

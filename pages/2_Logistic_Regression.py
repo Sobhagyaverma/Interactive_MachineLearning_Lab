@@ -223,10 +223,6 @@ with tab2:
     st.markdown("### 1. The Sigmoid Function (Squashing)")
     st.write("Linear Regression gives us numbers from $-\infty$ to $+\infty$. But for probability, we need **0 to 1**.")
     
-    # 
-
-    
-
     st.latex(r"\sigma(z) = \frac{1}{1 + e^{-z}}")
     
     st.write("This function takes any number 'z' and squashes it.")
@@ -241,7 +237,6 @@ with tab2:
     st.markdown("### 2. The Decision Boundary")
     st.write("We draw a line where the probability is exactly **50% (0.5)**. This happens when $z = 0$.")
     
-    # 
     st.latex(r"w_1 x_1 + w_2 x_2 + b = 0")
     
     st.write("Rearranging for $x_2$ (Equation of a line $y=mx+c$):")
@@ -253,7 +248,6 @@ with tab2:
     st.markdown("### 3. Log Loss (Binary Cross Entropy)")
     st.write("We cannot use MSE because the Sigmoid function makes the error surface 'wavy'. We use **Log Loss**:")
     
-    # 
     st.latex(r"J = - \frac{1}{n} \sum [y \log(\hat{y}) + (1-y) \log(1-\hat{y})]")
     
     st.warning(r"""

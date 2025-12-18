@@ -7,7 +7,64 @@ import utils
 
 st.set_page_config(page_title="K-Means Clustering", layout="wide")
 utils.navbar()
-st.title("✨ K-Means: Finding Patterns in Chaos")
+
+# --- CUSTOM CSS ---
+st.markdown("""
+<style>
+    .hero-container {
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+    }
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1f2937;
+    }
+    .hero-subtitle {
+        font-size: 1.1rem;
+        color: #6c757d;
+        font-style: italic;
+    }
+    /* Enhanced Tab Styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        padding: 0px 24px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        color: #4b5563;
+        font-weight: 600;
+        font-size: 16px;
+        border: 2px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        border-color: #ff4b4b;
+        color: #ff4b4b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #ff4b4b 0%, #ff6b6b 100%);
+        color: white !important;
+        border-color: #ff4b4b;
+        box-shadow: 0 4px 12px rgba(255, 75, 75, 0.3);
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# --- HERO SECTION ---
+st.markdown("""
+<div class="hero-container">
+    <div class="hero-title">✨ K-Means Clustering</div>
+    <div class="hero-subtitle">"Finding patterns in chaos."</div>
+</div>
+""", unsafe_allow_html=True)
 
 # --- TABS ---
 tab1, tab2 = st.tabs(["🎮 Playground", "📖 Theory & Math"])

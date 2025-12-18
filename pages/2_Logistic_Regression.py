@@ -25,18 +25,35 @@ st.markdown("""
         color: #6c757d;
         font-style: italic;
     }
+    /* Enhanced Tab Styling */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 10px;
+        gap: 8px;
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 10px;
     }
     .stTabs [data-baseweb="tab"] {
         height: 50px;
-        background-color: #f0f2f6;
-        border-radius: 4px;
+        padding: 0px 24px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        color: #4b5563;
         font-weight: 600;
+        font-size: 16px;
+        border: 2px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        border-color: #ff4b4b;
+        color: #ff4b4b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .stTabs [aria-selected="true"] {
-        background-color: #ff4b4b;
-        color: white;
+        background: linear-gradient(135deg, #ff4b4b 0%, #ff6b6b 100%);
+        color: white !important;
+        border-color: #ff4b4b;
+        box-shadow: 0 4px 12px rgba(255, 75, 75, 0.3);
     }
     .theory-box {
         background-color: #f8f9fa;
